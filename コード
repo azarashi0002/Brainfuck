@@ -23,14 +23,15 @@ int main() {
 			sp.push_back(s.tellg());
 		else
 			for (size_t count = 0;;) {
-				const char c = s.get();
-				if (c == '[')
+				switch (s.get()) {
+				case '[':
 					++count;
-				else if (c == ']') {
-					if (count)
-						--count;
-					else
-						break;
+					break;
+				case ']':
+					if (!count)
+						return;
+					--count;
+					break;
 				}
 			}
 	};
