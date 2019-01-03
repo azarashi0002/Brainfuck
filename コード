@@ -11,40 +11,47 @@ int main() {
 	std::vector<std::streampos> sp;
 	std::ifstream s("Code.txt", std::ios::in);
 
-	std::unordered_map<char, std::function<void()>> operators;
-	operators['>'] = [&] {++p; };
-	operators['<'] = [&] {--p; };
-	operators['+'] = [&] {++(*p); };
-	operators['-'] = [&] {--(*p); };
-	operators['.'] = [&] {std::putchar(*p); };
-	operators[','] = [&] {*p = std::getchar(); };
-	operators['['] = [&] {
-		if (*p)
-			sp.push_back(s.tellg());
-		else
-			for (size_t count = 0;;)
-				switch (s.get()) {
-				case '[':
-					++count;
-					break;
-				case ']':
-					if (!count)
-						return;
-					--count;
-					break;
-				}
-	};
-	operators[']'] = [&] {
-		if (*p)
-			s.seekg(sp.back());
-		else
-			sp.pop_back();
-	};
-
 	while (!s.eof()) {
-		const char c = s.get();
-		if (operators[c])
-			operators[c]();
+		switch (s.get()) {
+		case '>':
+			++p;
+			break;
+		case '<':
+			--p;
+			break;
+		case '+':
+			++(*p);
+			break;
+		case '-':
+			--(*p);
+			break;
+		case '.':
+			std::putchar(*p);
+			break;
+		case ',':
+			*p = std::getchar();
+			break;
+		case '[':
+			if (*p)
+				sp.push_back(s.tellg());
+			else
+				for (size_t count = 1; count;)
+					switch (s.get()) {
+					case '[':
+						++count;
+						break;
+					case ']':
+						--count;
+						break;
+					}
+			break;
+		case ']':
+			if (*p)
+				s.seekg(sp.back());
+			else
+				sp.pop_back();
+			break;
+		}
 	}
 
 	std::getchar();
@@ -52,3 +59,4 @@ int main() {
 
 	return 0;
 }
+
