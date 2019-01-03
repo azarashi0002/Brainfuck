@@ -22,7 +22,7 @@ int main() {
 		if (*p)
 			sp.push_back(s.tellg());
 		else
-			for (size_t count = 0;;) {
+			for (size_t count = 0;;)
 				switch (s.get()) {
 				case '[':
 					++count;
@@ -33,7 +33,6 @@ int main() {
 					--count;
 					break;
 				}
-			}
 	};
 	operators[']'] = [&] {
 		if (*p)
