@@ -1,0 +1,54 @@
+#include<cstdio>
+#include<fstream>
+#include<vector>
+#include<unordered_map>
+#include<functional>
+
+int main() {
+	std::vector<char> chars(30000, 0);
+	auto p = chars.begin();
+
+	std::vector<std::streampos> sp;
+	std::ifstream s("Code.txt", std::ios::in);
+
+	std::unordered_map<char, std::function<void()>> operators;
+	operators['>'] = [&] {++p; };
+	operators['<'] = [&] {--p; };
+	operators['+'] = [&] {++(*p); };
+	operators['-'] = [&] {--(*p); };
+	operators['.'] = [&] {std::putchar(*p); };
+	operators[','] = [&] {*p = std::getchar(); };
+	operators['['] = [&] {
+		if (*p)
+			sp.push_back(s.tellg());
+		else
+			for (size_t count = 0;;) {
+				const char c = s.get();
+				if (c == '[')
+					++count;
+				else if (c == ']') {
+					if (count)
+						--count;
+					else
+						break;
+				}
+			}
+	};
+	operators[']'] = [&] {
+		if (*p)
+			s.seekg(sp.back());
+		else
+			sp.pop_back();
+	};
+
+	while (!s.eof()) {
+		const char c = s.get();
+		if (operators[c])
+			operators[c]();
+	}
+
+	std::getchar();
+	std::getchar();
+
+	return 0;
+}
